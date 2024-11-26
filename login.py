@@ -1,58 +1,51 @@
-import pygame
-import pygame_gui
+from customtkinter import *
 
 class Login:
-    def __init__(self, main):
-        self.main = main
-        self.username = None
-        self.password = None
-        self.login_button = None
+    def __init__(self):
+        self.app = CTk()
+        self.app.title("Iniciar sesión")
+        self.app.geometry("800x600")
+        set_appearance_mode("dark")
 
-    def show_inputs(self):
-        # Crear input para username
-        self.username = pygame_gui.elements.UITextEntryLine(
-            relative_rect=pygame.Rect(
-                (570, 325),
-                (220, 50),
-            ),
-            manager=self.main.MANAGER
+        # Colors tkinter
+        self.COLOR_BARRA_SUPERIOR = "#1f2329"
+        self.COLOR_MENU_LATERAL = "#2a3138"
+        self.COLOR_CUERPO_PRINCIPAL = "#f1faff"
+        self.COLOR_MENU_CURSOR_ENCIMA = "#2f88c5"
+        self.WHITE = "#ffffff"
+
+
+    def showLogin(self):
+        # Crear el primer marco (izquierda)
+        frame_1 = CTkFrame(self.app)
+        frame_1.grid(row=0, column=0, sticky="nsew")
+
+        # Crear el segundo marco (derecha)
+        frame_2 = CTkFrame(self.app)
+        frame_2.grid(row=0, column=1, sticky="nsew")
+
+        # Configurar la grid para que las columnas tengan un tamaño proporcional
+        self.app.grid_columnconfigure(0, weight=1)  # Columna 0 (izquierda)
+        self.app.grid_columnconfigure(1, weight=2)  # Columna 1 (derecha)
+
+        # Agregar contenido a los marcos
+        label_1 = CTkLabel(
+            frame_1,
+            text="Iniciar sesión",
+            font=("./assets/fonts/DIN Black.ttf", 25),
         )
+        label_1.place(x=80, y=100)
 
-        # Crear input para password
-        self.password = pygame_gui.elements.UITextEntryLine(
-            relative_rect=pygame.Rect(
-                (570, 385),
-                (220, 50),
-            ),
-            manager=self.main.MANAGER
+        username = CTkEntry(
+            frame_1,
+            font=("./assets/fonts/DIN.ttf", 18),
+            placeholder_text="Usuario",
+            width=300,
+            height=40
         )
+        username.place(x=80, y=200)
 
-         # Crear el botón de inicio de sesión
-        self.login_button = pygame_gui.elements.UIButton(
-            relative_rect=pygame.Rect(
-                (570, 445),  # Cambia la posición Y para que esté después del password
-                (220, 50),
-            ),
-            text='Iniciar sesión',  # Texto del botón
-            manager=self.main.MANAGER
-        )
 
-    def draw_login_window(self):
-        # Fondo semitransparente para la ventana emergente
-        overlay = pygame.Surface((self.main.WIDTH, self.main.HEIGHT))
-        overlay.set_alpha(180)  # Transparencia
-        overlay.fill((0, 0, 0))  # Fondo negro semitransparente
-        self.main.SCREEN.blit(overlay, (0, 0))
-
-        # Caja de inicio de sesión
-        login_box = pygame.Rect(483, 250, 400, 300)
-        pygame.draw.rect(self.main.SCREEN, self.main.white, login_box)
-
-        # Títulos y campos
-        title_text = self.main.titleLogin.render("Iniciar sesión", True, self.main.BLACK)
-        self.main.SCREEN.blit(title_text, (self.main.WIDTH // 2 - title_text.get_width() // 2, 280))
-
-        # Dibujar la interfaz de usuario con los inputs
-        self.main.MANAGER.draw_ui(self.main.SCREEN)
-
-        pygame.display.flip()
+login = Login()
+login.showLogin()
+login.app.mainloop()
