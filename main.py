@@ -3,8 +3,10 @@ from PIL import Image
 import webbrowser
 
 from login import Login
+from home import Home
 
 class Main:
+
     def __init__(self):
         # URL de la API
         self.webUrl = "http://localhost:3000"
@@ -35,12 +37,48 @@ class Main:
         self.checkbox = None
         self.registerLink = None
 
+    # Cerrar la ventana de inicio de sesión y abrir la ventana del home del juego
+    def close(self, response):
+        self.app.destroy()
+        home = Home()
+        home.runHome(response)
+
+    # Función para iniciar sesión
     def login(self, data):
         login = Login()
-        login.login(data)
+        response = login.login(data)
+        
+        if not response:
+            self.errorLabel.configure(
+                text="Usuario o contraseña incorrectos",
+                text_color=self.COLOR_INVALIDO
+            )
+            self.username.configure(
+                placeholder_text_color=self.COLOR_TEXTO_INVALIDO,
+                border_color=self.COLOR_INVALIDO
+            )
+            self.password.configure(
+                placeholder_text_color=self.COLOR_TEXTO_INVALIDO,
+                border_color=self.COLOR_INVALIDO
+            )
+        else:
+            self.errorLabel.configure(
+                text="",
+            )
+            self.username.configure(
+                placeholder_text_color=self.COLOR_VALIDO,
+                border_color=self.COLOR_VALIDO
+            )
+            self.password.configure(
+                placeholder_text_color=self.COLOR_VALIDO,
+                border_color=self.COLOR_VALIDO
+            )
+
+            self.close(response)
+        
 
     # Función para validar datos del formulario
-    def dataValidation(self):        
+    def dataValidation(self):    
         data = {
             "username": self.username.get(),
             "password": self.password.get(),
@@ -63,7 +101,7 @@ class Main:
                 border_color=self.COLOR_INVALIDO
             )
             return
-        elif data["password"] == "":
+        elif data["password"] == "" or len(data["password"]) < 6:
             self.password.configure(
                 placeholder_text_color=self.COLOR_TEXTO_INVALIDO,
                 border_color=self.COLOR_INVALIDO
@@ -98,9 +136,11 @@ class Main:
         # Por ejemplo, abrir una URL de autenticación de Google
         webbrowser.open(f'{self.webUrl}/auth/google')
     
+
     # Cambiar color del enlace de registro al entrar el cursor
     def on_enter(self, event):
         self.registerLink.configure(text_color=self.COLOR_VALIDO)
+
 
     # Cambiar color del enlace de registro al salir el cursor
     def on_leave(self, event):
@@ -122,8 +162,8 @@ class Main:
 
     # Crear el primer marco (izquierda)
     def leftFrame(self):
-        frame_1 = CTkFrame(self.app, width=400, height=600, fg_color=self.COLOR_BARRA_SUPERIOR)
-        frame_1.place(x=0, y=0)
+        frameOne = CTkFrame(self.app, width=300, height=600, fg_color=self.COLOR_BARRA_SUPERIOR)
+        frameOne.place(x=0, y=0)
 
         logoImage = CTkImage(
             light_image=Image.open("./assets/images/LogoNegro.png"),
@@ -132,41 +172,49 @@ class Main:
         )
 
         logoLabel = CTkLabel(
-            frame_1,
+            frameOne,
             image=logoImage,
             text="",
         )
 
-        logoLabel.place(x=100, y=50)
+        logoLabel.place(x=50, y=50)
 
         # Agregar contenido a los marcos
         titleLogin = CTkLabel(
-            frame_1,
+            frameOne,
             text="Iniciar sesión",
             font=("./assets/fonts/DIN Black.ttf", 25),
         )
-        titleLogin.place(x=120, y=200)
+        titleLogin.place(x=75, y=180)
+
+         # Agregar contenido a los marcos
+        self.errorLabel = CTkLabel(
+            frameOne,
+            text="",
+            font=("./assets/fonts/DIN Black.ttf", 14),
+        )
+        self.errorLabel.place(x=25, y=210)
 
         self.username = CTkEntry(
-            frame_1,
+            frameOne,
             font=("./assets/fonts/DIN.ttf", 18),
             placeholder_text="Usuario",
-            width=300,
+            width=250,
             height=40,
             border_color=self.COLOR_BARRA_SUPERIOR
         )
-        self.username.place(x=50, y=240)
+        self.username.place(x=25, y=240)
         
         self.password = CTkEntry(
-            frame_1,
+            frameOne,
             font=("./assets/fonts/DIN.ttf", 18),
             placeholder_text="Contraseña",
             show="*",
-            width=300,
+            width=250,
             height=40,
             border_color=self.COLOR_BARRA_SUPERIOR
         )
-        self.password.place(x=50, y=290)
+        self.password.place(x=25, y=290)
 
         googleIcon = CTkImage(
             light_image=Image.open("./assets/images/google.png"),
@@ -175,11 +223,11 @@ class Main:
         )
 
         buttonLoginGoogle = CTkButton(
-            frame_1,
+            frameOne,
             cursor="hand2",
             text="",
             font=("./assets/fonts/DIN.ttf", 18),
-            width=300,
+            width=250,
             height=40,
             border_color=self.COLOR_BARRA_SUPERIOR,
             fg_color='#fff',
@@ -190,7 +238,7 @@ class Main:
             command=self.loginWithGoogle
         )
 
-        buttonLoginGoogle.place(x=50, y=340)
+        buttonLoginGoogle.place(x=25, y=340)
 
         # Crear un CheckBox
         self.checkbox = CTkCheckBox(
@@ -202,16 +250,16 @@ class Main:
             bg_color=self.COLOR_BARRA_SUPERIOR,
             border_color=self.COLOR_MENU_LATERAL
         )
-        self.checkbox.place(x=50, y=390)
+        self.checkbox.place(x=25, y=390)
 
         loginIcon = CTkImage(
             light_image=Image.open("./assets/images/loginIconLight.png"),
             dark_image=Image.open("./assets/images/loginIconDark.png"),
-            size=(25, 25)
+            size=(30, 30)
         )
 
         buttonLogin = CTkButton(
-            frame_1,
+            frameOne,
             cursor="hand2",
             text="",
             font=("./assets/fonts/DIN.ttf", 18),
@@ -225,43 +273,44 @@ class Main:
             command=self.dataValidation
         )
 
-        buttonLogin.place(x=(400/2)-25, y=450)
+        buttonLogin.place(x=(400/2)-75, y=450)
 
         # Agregar contenido a los marcos
         self.registerLink = CTkLabel(
-            frame_1,
+            frameOne,
             text="¿No tienes una cuenta? Regístrate",
             font=("./assets/fonts/DIN Black.ttf", 14),
             cursor="hand2",
         )
-        self.registerLink.place(x=80, y=560)
-    
+        self.registerLink.place(x=40, y=560)
+
+
     # Crear el segundo marco (derecha)
     def rightFrame(self):
-        frameTwo = CTkFrame(self.app,width=400, height=600)
-        frameTwo.place(x=400, y=0)
+        frameTwo = CTkFrame(self.app,width=500, height=600)
+        frameTwo.place(x=300, y=0)
 
-        imageBg = CTkImage(
-            light_image=Image.open("./assets/images/bg.png"),
-            dark_image=Image.open("./assets/images/bg.png"),
-            size=(1366, 720)
+        imageBgRight = CTkImage(
+            light_image=Image.open("./assets/images/bgRight.png"),
+            dark_image=Image.open("./assets/images/bgRight.png"),
+            size=(500, 600)
         )
 
         logoLabel = CTkLabel(
             frameTwo,
-            image=imageBg,
+            image=imageBgRight,
             text="",
         )
 
-        logoLabel.place(x=-700, y=0)
+        logoLabel.place(x=-0, y=0)
     
-
+    # Mostrar la ventana de inicio de sesión
     def showLogin(self):
         self.leftFrame()
         self.rightFrame()
         self.events()
 
-
-main = Main()
-main.showLogin()
-main.app.mainloop()
+if __name__ == "__main__":
+    main = Main()
+    main.showLogin()
+    main.app.mainloop()

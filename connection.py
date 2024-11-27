@@ -11,7 +11,6 @@ class Connection:
         try:
             self.client = MongoClient(self.uri)
             self.db = self.client[self.database_name]
-            print("Connected to MongoDB Atlas")
         except Exception as e:
             print(f"An error occurred: {e}")
 
