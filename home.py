@@ -1,15 +1,18 @@
 import pygame
-import sys
+
+from configurations import Configurations
 
 class Home:
     def __init__(self):
         super().__init__()
         pygame.init()
+        self.config = Configurations()
         # Variables de screen
-        self.screenWidth = 1366
-        self.screenHeight = 720
+        self.resolution = self.config.currentResolution
+        self.screenWidth = self.resolution[0]
+        self.screenHeight = self.resolution[1]
         self.gameName = 'Proyecto Z'
-        self.screen = pygame.display.set_mode((self.screenWidth, self.screenHeight))
+        self.screen = pygame.display.set_mode(self.resolution)
         self.clock = pygame.time.Clock()
         self.running = True
         self.data = None
@@ -41,7 +44,7 @@ class Home:
 
         # Cargar y redimensionar la imagen de fondo solo una vez
         self.background_image = pygame.image.load("./assets/images/lobby/background.jpg")
-        self.background_image = pygame.transform.scale(self.background_image, (self.screenWidth, self.screenHeight))
+        self.background_image = pygame.transform.scale(self.background_image, self.resolution)
 
     def showMenu(self):
         # Crear el texto del título

@@ -1,30 +1,18 @@
+import pygame
+
 class Configurations:
     def __init__(self):
-        # Configuraciones predeterminadas
-        self.settings = {
-            "volume": 50,  # Rango 0-100
-            "resolution": "1920x1080",
-            "fullscreen": True,
-            "controls": {
-                "move_up": "W",
-                "move_down": "S",
-                "move_left": "A",
-                "move_right": "D",
-                "action": "E"
-            }
+        # Opciones de resoluciones disponibles
+        self.resolutions = {
+            "1920x1080": (1920, 1080),  # FHD
+            "1280x720": (1280, 720),    # HD
+            "1366x768": (1366, 768),    # HD
+            "1024x768": (1024, 768),    # XGA
+            "800x600": (800, 600),      # SVGA
         }
+        # Color para el fondo negro opaco
+        self.OPAQUE_BLACK = (0, 0, 0, 200)
 
-    # Métodos para interactuar con las configuraciones
-    def increase_volume(self, step=5):
-        if self.settings["volume"] < 100:
-            self.settings["volume"] = min(100, self.settings["volume"] + step)
-            print(f"Volumen aumentado a {self.settings['volume']}")
-        else:
-            print("El volumen ya está en el máximo.")
+        # Resolución actual
+        self.currentResolution = self.resolutions["1366x768"]
 
-    def decrease_volume(self, step=5):
-        if self.settings["volume"] > 0:
-            self.settings["volume"] = max(0, self.settings["volume"] - step)
-            print(f"Volumen reducido a {self.settings['volume']}")
-        else:
-            print("El volumen ya está en el mínimo.")
